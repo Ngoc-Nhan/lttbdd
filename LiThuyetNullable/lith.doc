@@ -1,0 +1,8 @@
+Thế nào là nullable:
+Trong Flutter (Dart), nullable là biến có thể nhận giá trị null. Mặc định, các biến trong Dart không được phép null, muốn cho phép thì phải khai báo thêm dấu ?. Cơ chế null safety giúp phát hiện lỗi liên quan đến null ngay khi biên dịch, hạn chế việc ứng dụng bị crash khi chạy.
+
+Khi nào nên / không nên dùng nullable:
+Nên dùng nullable khi dữ liệu chưa có ngay hoặc có thể không tồn tại, chẳng hạn như dữ liệu người dùng nhập vào, dữ liệu lấy từ API hoặc database. Không nên dùng nullable cho những biến bắt buộc phải có giá trị vì sẽ làm code phức tạp và phải kiểm tra null nhiều lần, gây khó khăn trong việc xây dựng giao diện.
+
+Cách xử lý null phổ biến trong Flutter:
+Flutter cung cấp nhiều cách xử lý null như dùng dấu ? để khai báo biến nullable, ?. để truy cập an toàn, ?? để gán giá trị mặc định khi biến null, late để khởi tạo biến sau và ! để khẳng định biến không null trong trường hợp đã kiểm soát chắc chắn, giúp code an toàn và dễ đọc hơn.

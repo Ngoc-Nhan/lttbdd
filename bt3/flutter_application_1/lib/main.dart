@@ -28,22 +28,32 @@ class _HomeScreenState extends State<HomeScreen> {
   double num2 = 0;
   String operator = '';
   double result = 0;
+  String message = '';
 
   void calculate() {
-    switch (operator) {
-      case '+':
-        result = num1 + num2;
-        break;
-      case '-':
-        result = num1 - num2;
-        break;
-      case '*':
-        result = num1 * num2;
-        break;
-      case '/':
-        result = num2 != 0 ? num1 / num2 : 0;
-        break;
-    }
+    setState(() {
+      message = '';
+
+      switch (operator) {
+        case '+':
+          result = num1 + num2;
+          break;
+        case '-':
+          result = num1 - num2;
+          break;
+        case '*':
+          result = num1 * num2;
+          break;
+        case '/':
+          if (num2 == 0) {
+            message = 'Không thể chia cho 0';
+            result = 0;
+          } else {
+            result = num1 / num2;
+          }
+          break;
+      }
+    });
   }
 
   @override
@@ -85,40 +95,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   text: '+',
                   color: Colors.red,
                   onTap: () {
-                    setState(() {
-                      operator = '+';
-                      calculate();
-                    });
+                    operator = '+';
+                    calculate();
                   },
                 ),
                 OperatorButton(
                   text: '-',
                   color: Colors.orange,
                   onTap: () {
-                    setState(() {
-                      operator = '-';
-                      calculate();
-                    });
+                    operator = '-';
+                    calculate();
                   },
                 ),
                 OperatorButton(
                   text: '*',
                   color: Colors.purple,
                   onTap: () {
-                    setState(() {
-                      operator = '*';
-                      calculate();
-                    });
+                    operator = '*';
+                    calculate();
                   },
                 ),
                 OperatorButton(
                   text: '/',
                   color: Colors.black,
                   onTap: () {
-                    setState(() {
-                      operator = '/';
-                      calculate();
-                    });
+                    operator = '/';
+                    calculate();
                   },
                 ),
               ],
@@ -139,6 +141,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             const SizedBox(height: 20),
+
+            // Thông báo lỗi
+            if (message.isNotEmpty)
+              Text(
+                message,
+                style: const TextStyle(color: Colors.red, fontSize: 16),
+              ),
+
+            const SizedBox(height: 10),
 
             // Kết quả
             Text(
