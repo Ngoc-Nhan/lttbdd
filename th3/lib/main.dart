@@ -24,23 +24,28 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+  
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  String? selectedPayment;
+ ///ENCABSULATION (ĐÓNG GÓI)
+/// - selectedPayment và payments được quản lý bên trong State
+/// - bên ngoài KHÔNG truy cập trực tiếp
 
-  // ===== WIDGET PAYMENT ITEM (OOP - TRỪU TƯỢNG HÓA) =====
-  Widget paymentItem({
-    required String id,
-    required String title,
-    required String image,
-  }) {
-    final bool isSelected = selectedPayment == id;
+class _MyHomePageState extends State<MyHomePage> {
+  PaymentMethod? selectedPayment;
+
+  final List<PaymentMethod> payments = [Paypal(), GooglePay(), ApplePay()];
+
+  ///  POLYMORPHISM (ĐA HÌNH) payments
+  
+
+  Widget paymentItem(PaymentMethod payment) {
+    final bool isSelected = selectedPayment?.id == payment.id;
 
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedPayment = isSelected ? null : id;
+          selectedPayment = isSelected ? null : payment;
         });
       },
       child: Container(
@@ -49,13 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
         decoration: BoxDecoration(
           color: isSelected ? Colors.blue.shade50 : Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            // color: isSelected ? Colors.blue : Colors.grey.shade300,
-            width: 1.5,
-          ),
+          border: Border.all(width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: const Color.fromARGB(255, 98, 93, 93).withOpacity(0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 5,
               offset: const Offset(0, 3),
             ),
@@ -70,53 +72,39 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(width: 16),
             Text(
-              title,
+              payment.title,
               style: TextStyle(
                 fontSize: 18,
-                // color: isSelected ? Colors.blue : Colors.black,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
             const Spacer(),
-            Image.asset(image, width: 50, height: 50),
+            Image.asset(payment.image, width: 50, height: 50),
           ],
         ),
       ),
     );
   }
 
-  // ===== ICON / LOGO PHÍA TRÊN =====
+  ///  POLYMORPHISM
+  /// - Không cần switch-case
+  /// - Mỗi object tự cung cấp image của nó
+
   Widget selectedPaymentView() {
     if (selectedPayment == null) {
       return const Icon(Icons.add_card, size: 70, color: Colors.grey);
     }
 
-    String image;
-    switch (selectedPayment) {
-      case 'paypal':
-        image = 'assets/images/paypal.png';
-        break;
-      case 'ggpay':
-        image = 'assets/images/ggpay.png';
-        break;
-      default:
-        image = 'assets/images/applepay.png';
-    }
-
-    return Image.asset(image, width: 100, height: 100);
+    return Image.asset(selectedPayment!.image, width: 100, height: 100);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // title: const Text('Payment Method'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: AppBar(backgroundColor: Colors.blue),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 60),
             Center(child: selectedPaymentView()),
@@ -124,46 +112,65 @@ class _MyHomePageState extends State<MyHomePage> {
             const Divider(),
             const SizedBox(height: 24),
 
-            // ===== PAYMENT LIST =====
-            paymentItem(
-              id: 'paypal',
-              title: 'PayPal',
-              image: 'assets/images/paypal.png',
-            ),
-            paymentItem(
-              id: 'ggpay',
-              title: 'Google Pay',
-              image: 'assets/images/ggpay.png',
-            ),
-            paymentItem(
-              id: 'applepay',
-              title: 'Apple Pay',
-              image: 'assets/images/applepay.png',
-            ),
+            ///  POLYMORPHISM
+            /// - Duyệt danh sách PaymentMethod
+            for (final payment in payments) paymentItem(payment),
 
             const SizedBox(height: 24),
 
-            // ===== CONTINUE BUTTON =====
             if (selectedPayment != null)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  // xử lý tiếp theo
-                },
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
+              ElevatedButton(onPressed: () {}, child: const Text('Continue')),
           ],
         ),
       ),
     );
   }
+}
+
+///  ABSTRACTION (TRỪU TƯỢNG)
+/// - Định nghĩa CHUNG cho mọi phương thức thanh toán
+/// - Không quan tâm chi tiết từng loại
+
+abstract class PaymentMethod {
+  String get id;
+  String get title;
+  String get image;
+}
+
+///  INHERITANCE (KẾ THỪA)
+/// - Paypal kế thừa PaymentMethod
+
+class Paypal extends PaymentMethod {
+  @override
+  String get id => 'paypal';
+
+  @override
+  String get title => 'PayPal';
+
+  @override
+  String get image => 'assets/images/paypal.png';
+}
+
+/// 👉 INHERITANCE
+class GooglePay extends PaymentMethod {
+  @override
+  String get id => 'ggpay';
+
+  @override
+  String get title => 'Google Pay';
+
+  @override
+  String get image => 'assets/images/ggpay.png';
+}
+
+///  INHERITANCE
+class ApplePay extends PaymentMethod {
+  @override
+  String get id => 'applepay';
+
+  @override
+  String get title => 'Apple Pay';
+
+  @override
+  String get image => 'assets/images/applepay.png';
 }
