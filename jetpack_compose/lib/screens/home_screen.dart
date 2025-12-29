@@ -5,7 +5,7 @@ import 'input_screen.dart';
 import 'PW_page.dart';
 import 'ColumnPage.dart';
 import 'RowPage.dart';
-import 'AnimatedVisibilityPage.dart';
+import 'AnimatedPage.dart';
 import 'CrossfadePage.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -64,15 +64,13 @@ class HomeScreen extends StatelessWidget {
       'title': 'Animation',
       'items': [
         {
-          'title': 'AnimatedVisibility',
+          'title': 'AnimatedOpacity',
           'subtitle': 'Show or hide items with animation',
-          'page': const AnimatedVisibilityPage(),
+          'page': const AnimatedPage(),
         },
-        {
-          'title': 'Crossfade',
-          'subtitle': 'Fade between two items',
-          'page': const CrossfadePage(),
-        },
+        // {
+        //   ''
+        // },
       ],
     },
   ];
